@@ -48,42 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Activate menu item corresponding to current page
-    function highlightActiveLink() {
-        const iframe = document.querySelector('iframe[name="contentFrame"]');
-        if (!iframe || !iframe.src || iframe.src === 'about:blank') return;
-        
-        const currentPage = iframe.src.split('/').pop();
-        console.log('Current page:', currentPage);
-        
-        // Clear all active states first
-        links.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Set current page link as active
-        let activeFound = false;
-        links.forEach(link => {
-            const linkPage = link.href.split('/').pop();
-            if (linkPage === currentPage) {
-                link.classList.add('active');
-                activeFound = true;
-                
-                // If it's a sub-item, expand its parent directory
-                const parentList = link.closest('.toc-sublist');
-                if (parentList) {
-                    parentList.classList.add('active');
-                    parentList.style.maxHeight = parentList.scrollHeight + 'px';
-                }
-            }
-        });
-        
-        return activeFound;
-    }
-    
-    // Set initial active link
-    highlightActiveLink();
-    
     // Add smooth scroll to content
     const contentFrame = document.querySelector('iframe[name="contentFrame"]');
     if (contentFrame && contentFrame.contentDocument) {
@@ -95,22 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Update active state after iframe loads
-    const iframe = document.querySelector('iframe[name="contentFrame"]');
-    iframe.addEventListener('load', function() {
-        // Check if iframe loaded successfully and has valid content
-        try {
-            // If iframe content is accessible, update highlighting
-            if (this.contentDocument && this.contentDocument.body) {
-                this.contentDocument.body.style.scrollBehavior = 'smooth';
-                highlightActiveLink();
-            }
-        } catch (e) {
-            // If unable to access iframe content due to cross-domain issues, still try to update highlighting based on URL
-            highlightActiveLink();
-        }
-    });
-    
     // Update active state when clicking links
     links.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -118,9 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
             links.forEach(l => l.classList.remove('active'));
             // Set the currently clicked link as active
             this.classList.add('active');
-            
-            // Store the current page for reference
-            sessionStorage.setItem('currentActivePage', this.href.split('/').pop());
             
             // If link points to valid file, expand parent directory
             const parentList = this.closest('.toc-sublist');
@@ -150,30 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 sublist.style.maxHeight = '0px';
             }
         });
-        
-        // Check if we have a stored active page and highlight it
-        const storedActivePage = sessionStorage.getItem('currentActivePage');
-        if (storedActivePage) {
-            links.forEach(link => {
-                const linkPage = link.href.split('/').pop();
-                if (linkPage === storedActivePage) {
-                    // Remove active class from all links
-                    links.forEach(l => l.classList.remove('active'));
-                    // Add active class to this link
-                    link.classList.add('active');
-                    
-                    // Expand parent directory if needed
-                    const parentList = link.closest('.toc-sublist');
-                    if (parentList) {
-                        parentList.classList.add('active');
-                        parentList.style.maxHeight = parentList.scrollHeight + 'px';
-                    }
-                }
-            });
-        } else {
-            // If no stored page, highlight based on current iframe content
-            highlightActiveLink();
-        }
     }, 100);
 
     // Code Block Copy Functionality
@@ -285,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupCodeCopy();
 
     // Setup code copying when iframe loads new content
+    const iframe = document.querySelector('iframe[name="contentFrame"]');
     if (iframe) {
         iframe.addEventListener('load', setupCodeCopy);
     }
