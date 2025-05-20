@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schritt 2: VM Cluster einrichten</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Schritt 2: VM Cluster einrichten</h1>
+    
+    <!-- Content Description -->
+    <p>Im letzten Abschnitt haben Sie alle benötigten Rechenressourcen in der bwCloud erstellt und die erforderlichen Sicherheitsgruppen so konfiguriert, dass Ihre VMs miteinander kommunizieren können. 
+        In diesem Abschnitt richten Sie einen VM-Cluster innerhalb dieser Ressourcen ein. Dieser Cluster erleichtert die effiziente Verteilung der Rechenaufgaben.
+        
+    </p>
+    <h2>Docker Swarm Cluster</h2>
+    <p>Für Single Kurs Web App wird ein Docker Swarm Cluster benötigt. Dieser Cluster besteht aus zwei Rollen: dem Manager Node und dem Worker Node. Während die Web-Anwendungen auf dem Manager Node bereitgestellt werden, verteilen sich die meisten Rechenaufgaben auf die Worker Nodes.
+        Stellen Sie sich vor, ein Student loggt sich in eine Web-Anwendung ein und möchte direkt mit dem Programmieren beginnen. Der Manager Node startet dann einen Docker Container auf einem Worker Node, sodass der Student die Rechenressourcen dort nutzen kann, um seine Programme auszuführen.
+    <img src="../images/schiff.png" alt="Docker Swarm Cluster" title="Docker Swarm Cluster" style="max-width: 80%; height: 80%; position: relative; left: 8%;">
+
+    <p>Dieses Abschnitt gliedert sich in folgende Abschnitte:</p>
+    <ul>
+        <li><a href="section3-1.html">Manager Node einrichten</a></li>
+        <li><a href="section3-2.html">Worker Node einrichten</a></li>
+    </ul>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

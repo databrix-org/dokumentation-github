@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shibboleth Konfiguration</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Shibboleth Konfiguration</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt lernen Sie, wie Sie eine Shibboleth Authentifizierung einrichten.
+        Diese Authentifizierung wird auf dem Manager Node erstellt und dann auf die Worker Nodes verteilt.
+        Stellen Sie sich vor, ein Student loggt sich in eine Web-Anwendung ein und möchte direkt mit dem Programmieren beginnen. Der Manager Node startet dann einen Docker Container auf einem Worker Node, sodass der Student die Rechenressourcen dort nutzen kann, um seine Programme auszuführen.
+    </p>
+
+
+
+    <h2>Konfiguration Shibboleth</h2>
+
+    <h3>shibboleth.xml</h3>
+    <p><strong>shibbboleth.xml</strong> wird für die Kommunikation mit dem IdP zur Authentifizierung des Benutzers verwendet.</p>
+
+    <pre><code class="language-xml">
+&lt;SPConfig  xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    clockSkew="180"&gt;
+ 
+    &lt;OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a" /&gt;
+
+    &lt;!--
+    By default, in-memory StorageService, ReplayCache, ArtifactMap, and SessionCache
+    are used. See example-shibboleth2.xml for samples of explicitly configuring them.
+    --&gt;
+
+    &lt;!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. --&gt;
+    &lt;ApplicationDefaults entityID="https://example.org/shibboleth"
+        homeURL="https://example.org/Shibboleth.sso/Session"
+        REMOTE_USER="persistent-id uniqueID Givenname Mail"
+        cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"&gt;
+
+        &lt;!--
+        Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
+        Each Application has an effectively unique handlerURL, which defaults to "/Shibboleth.sso"
+        and should be a relative path, with the SP computing the full value based on the virtual
+        host. Use of TLS is now assumed because browsers are enforcing it due to SameSite
+        restrictions. Note that while we default checkAddress to "false", this makes an assertion
+        stolen in transit easier for attackers to misuse.
+        --&gt;
+       &lt;Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
+                  checkAddress="false" handlerSSL="true" cookieProps="https"
+                  redirectLimit="host"&gt;
+
+            &lt;!--
+            Configures SSO for a default IdP. To properly allow for &gt;1 IdP, remove
+            entityID property and adjust discoveryURL to point to discovery service.
+            You can also override entityID on /Login query string, or in RequestMap/htaccess.
+            --&gt;
+            &lt;SSO entityID="https://saml.dhbw-stuttgart.de/idp/shibboleth"
+                 discoveryProtocol="SAMLDS" discoveryURL="https://example.org/shibboleth-ds/index.html"&gt;
+              SAML2
+            &lt;/SSO&gt;
+            &lt;!--
+            &lt;SSO discoveryProtocol="SAMLDS" discoveryURL="https://example.org/shibboleth-ds/index.html"&gt;
+              SAML2
+            &lt;/SSO&gt;
+            --&gt;
+            &lt;!-- SAML and local-only logout. --&gt;
+            &lt;Logout&gt;SAML2 Local&lt;/Logout&gt;
+
+            &lt;!-- Administrative logout. --&gt;
+            &lt;LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1" /&gt;
+
+            &lt;!-- Extension service that generates "approximate" metadata based on SP configuration. --&gt;
+            &lt;Handler type="MetadataGenerator" Location="/Metadata" signing="false"/&gt;
+            &lt;!-- Status reporting service. --&gt;
+
+            &lt;Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/&gt;
+
+            &lt;!-- Session diagnostic service. --&gt;
+            &lt;Handler type="Session" Location="/Session" showAttributeValues="false"/&gt;
+
+            &lt;!-- JSON feed of discovery information. --&gt;
+            &lt;Handler type="DiscoveryFeed" Location="/DiscoFeed"/&gt;
+        &lt;/Sessions&gt;
+
+        &lt;!--
+        Allows overriding of error template information/filenames. You can
+        also add your own attributes with values that can be plugged into the
+        templates, e.g., helpLocation below.
+        --&gt;
+        &lt;Errors supportContact="yuqiang.gu@dhbw-stutgart.de"
+            helpLocation="/about.html"
+            styleSheet="/shibboleth-sp/main.css"/&gt;
+
+        &lt;!-- Example of locally maintained metadata. --&gt;
+        &lt;!--
+        &lt;MetadataProvider type="XML" validate="true" path="partner-metadata.xml"/&gt;
+        --&gt;
+        &lt;!-- Example of remotely supplied batch of signed metadata.
+        --&gt;
+        &lt;MetadataProvider type="XML" validate="true"
+                    url="https://saml.dhbw-stuttgart.de/idp/shibboleth"&gt;
+        &lt;/MetadataProvider&gt;
+
+
+        &lt;!-- Example of remotely supplied "on-demand" signed metadata. --&gt;
+        &lt;!--
+        &lt;MetadataProvider type="MDQ" validate="true" cacheDirectory="mdq"
+                    baseUrl="http://mdq.federation.org" ignoreTransport="true"&gt;
+            &lt;MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/&gt;
+            &lt;MetadataFilter type="Signature" certificate="mdqsigner.pem" /&gt;
+        &lt;/MetadataProvider&gt;
+        --&gt;
+
+        &lt;!-- Map to extract attributes from SAML assertions. --&gt;
+        &lt;AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/&gt;
+
+        &lt;!-- Default filtering policy for recognized attributes, lets other data pass. --&gt;
+        &lt;AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/&gt;
+
+        &lt;!-- Simple file-based resolvers for separate signing/encryption keys. --&gt;
+        &lt;CredentialResolver type="File" use="signing"
+            key="sp-signing-key.pem" certificate="sp-signing-cert.pem"/&gt;        
+        
+        &lt;CredentialResolver type="File" use="encryption"
+            key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/&gt;
+    
+
+    &lt;/ApplicationDefaults&gt;
+
+    &lt;!-- Policies that determine how to process and authenticate runtime messages. --&gt;
+    &lt;SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/&gt;
+
+    &lt;!-- Low-level configuration about protocols and bindings available for use. --&gt;
+    &lt;ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/&gt;
+
+&lt;/SPConfig&gt;
+    </code></pre>
+
+    <h3>idpselect_condig.js</h3>
+    <p><strong>idpselect_condig.js</strong> (in Shibboleth-ds Odner) muss auch konfiguriert werden, damit VM von Shibboleth IdP erlaubt ist.</p>
+    <p>Add this:</p>
+
+    <pre><code class="language-js">
+ this.redirectAllow = [ "^https:\/\/1985609f-7839-4819-8840-2d38548e4ea5.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ,"^https:\/\/example\.com\/Shibboleth\.sso\/Login.*$" ];
+ this.returnWhiteList = [ "^https:\/\/example\.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ];
+    </code></pre>
+
+    <h3>attribute-map.xml</h3>
+    <p><strong>attribute-map.xml</strong> definiert welche Attribution werden von shibboleth angezeigt und in http Headers hinzugefügt. 
+    Folgende Attribution zeigt ob der User ein Mitarbeiter oder ein Student ist. Diese müssen Sie in <strong>attribute-map.xml</strong> schreiben.</p>
+
+    <pre><code class="language-xml">
+&lt;Attribute name="urn:mace:dir:attribute-def:eduPersonAffiliation" id="unscoped-affiliation"&gt;
+    &lt;AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/&gt;
+&lt;/Attribute&gt;
+    </code></pre>
+
+    <p>Nach der Konfiguration müssen die Dienste neu gestartet werden:</p>
+    <pre><code class="language-bash">
+systemctl restart shibd
+systemctl restart apache2
+    </code></pre>
+
+    <h3>Referenzen:</h3>
+    <ol>
+        <li><a href="https://doku.tid.dfn.de/de:shibsp" target="_blank">Generelle Shibboleth SP Konfiguration</a></li>
+        <li><a href="https://doku.tid.dfn.de/de:aai:training:shibsp" target="_blank">Praxis Übung für Shibboleth SP</a></li>
+        <li><a href="https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20Debian-Ubuntu%20Linux.md" target="_blank">Anleitung für Installation Shibboleth SP</a></li>
+    </ol>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

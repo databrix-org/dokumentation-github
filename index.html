@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentnavigation</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Inhaltsverzeichnis</h2>
+            <ul class="toc">
+                <li class="toc-item">
+                    <div class="toc-header">
+                        
+                        <a href="sections/section1.html" target="contentFrame">Einführung</a>
+                    </div>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section2.html" target="contentFrame">Schritt 1: Cloud-Umgebung einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section2-1.html" target="contentFrame">Konto und Projekt anlegen</a></li>
+                        <li><a href="sections/section2-2.html" target="contentFrame">Virtuelle Maschinen Launchen</a></li>
+                        <li><a href="sections/section2-3.html" target="contentFrame">Sicherheitsgruppen</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section3.html" target="contentFrame">Schritt 2: VM Cluster einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section3-1.html" target="contentFrame">Manager Node einrichten</a></li>
+                        <li><a href="sections/section3-2.html" target="contentFrame">Worker Node einrichten</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section4.html" target="contentFrame">Schritt 3: NFS Volume einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section4-1.html" target="contentFrame">NFS Volume erstellen</a></li>
+                        <li><a href="sections/section4-2.html" target="contentFrame">NFS Volume mounten</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section5.html" target="contentFrame">Schritt 4: Apache Webserver einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section5-1.html" target="contentFrame">Apache Webserver erstellen</a></li>
+                    </ul>
+                </li>
+
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section6.html" target="contentFrame">Schritt 5: Shibboleth Authentifizierung einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section6-1.html" target="contentFrame">Shibboleth Konfiguration</a></li>
+                        <li><a href="sections/section6-2.html" target="contentFrame">IT-Abteilung kontaktieren</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section7.html" target="contentFrame">Schritt 6: JupyterHub einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section7-1.html" target="contentFrame">JupyterHub erstellen</a></li>
+                        <li><a href="sections/section7-2.html" target="contentFrame">JupyterHub konfigurieren</a></li>
+                        <li><a href="sections/section7-3.html" target="contentFrame">JupyterHub starten</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section8.html" target="contentFrame">Schritt 7: JupyterLab Image Konfigurieren</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section8-1.html" target="contentFrame">JupyterLab Image erstellen</a></li>
+                        <li><a href="sections/section8-2.html" target="contentFrame">JupyterLab Image konfigurieren</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <div class="toc-header">
+                        <span class="toggle-btn"></span>
+                        <a href="sections/section9.html" target="contentFrame">Schritt 8: WebApp einrichten</a>
+                    </div>
+                    <ul class="toc-sublist">
+                        <li><a href="sections/section9-1.html" target="contentFrame">WebApp erstellen</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <iframe name="contentFrame" src="sections/section1.html" frameborder="0"></iframe>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="js/code-copy.js"></script>
+</body>
+</html> 

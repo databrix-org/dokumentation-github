@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtuelle Maschinen Launchen</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Virtuelle Maschinen und Speichervolumes starten</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt werden wir die virtuellen Maschinen und das Speichervolume erstellen, die für die Bereitstellung der E-Learning-Anwendung erforderlich sind.</p>
+    
+    <h2>Virtuelle Maschinen starten</h2>
+    <p>Um die VMs zu erstellen, navigieren Sie zur Seite "Instances" in der bwCloud-Benutzeroberfläche.</p>
+    <img src="../images/Launch_instance.png" alt="VM Instanzen erstellen" title="Virtuelle Maschinen erstellen" style="max-width: 80%; height: auto;">
+    
+    <p>Für die E-Learning-Anwendung benötigen Sie folgende VMs:</p>
+    <ul>
+        <li>1 Manager Node für die Verwaltung und Ausführung der Webanwendung (4 vCPUs, 8 GB RAM)</li>
+        <li>4 Worker Nodes für die Ausführung der Jupyter-Notebooks der Studierenden (4 vCPUs, 8 GB RAM pro Node)</li>
+    </ul>
+    
+    <h3>Schritte zum Erstellen einer VM:</h3>
+    <ol>
+        <li>Klicken Sie auf die Schaltfläche "Launch Instance" auf der Seite "Instances".</li>
+        <li>Wählen Sie im Dialogfeld "Launch Instance" die Registerkarte "Details" und geben Sie einen Namen für Ihre VM ein.</li>
+        <li>Wählen Sie die Registerkarte "Source" und dann ein Ubuntu 20.04 Image aus der Liste.</li>
+        <li>Wählen Sie die Registerkarte "Flavor" und wählen Sie die für den Knoten geeignete Flavor (z. B. m1.medium für Manager, m1.large für Worker).</li>
+        <li>Wählen Sie die Registerkarte "Networks" und wählen Sie das Netzwerk "provider_net_dhbw".</li>
+        <li>Wählen Sie die Registerkarte "Security Groups" und wählen Sie die Sicherheitsgruppe "default" (wir werden später eine eigene Sicherheitsgruppe erstellen).</li>
+        <li>Wählen Sie die Registerkarte "Key Pair", um ein Schlüsselpaar zu importieren oder zu erstellen. Wenn Sie noch keines haben, können Sie auf "Create Key Pair" klicken.</li>
+        <li>Klicken Sie auf "Launch Instance", um die VM zu erstellen.</li>
+    </ol>
+    
+    <div class="note">
+        <p><strong>Hinweis:</strong> Stellen Sie sicher, dass Sie Ihr privates Schlüsselpaar sicher aufbewahren, da Sie es zum Herstellen einer SSH-Verbindung zu Ihren VMs benötigen.</p>
+    </div>
+    
+    <p>Wiederholen Sie diesen Vorgang für alle erforderlichen VMs.</p>
+    
+    <h2>Speichervolume erstellen</h2>
+    <p>Als Nächstes erstellen wir ein Speichervolume für den dauerhaften Speicher der Anwendungsdaten:</p>
+    <ol>
+        <li>Navigieren Sie zum Abschnitt "Volumes" im linken Menü und klicken Sie auf "Create Volume".</li>
+        <li>Geben Sie einen Namen für das Volume ein (z. B. "e-learning-data").</li>
+        <li>Legen Sie die Größe auf mindestens 100 GB fest, um genügend Platz für die Jupyter-Notebooks und Kursdaten zu haben.</li>
+        <li>Klicken Sie auf "Create Volume", um das Speichervolume zu erstellen.</li>
+    </ol>
+    
+    <p>Nach der Erstellung müssen Sie das Volume an die Manager-Node anhängen:</p>
+    <ol>
+        <li>Suchen Sie das erstellte Volume in der Liste, klicken Sie auf das Dropdown-Menü daneben und wählen Sie "Manage Attachments".</li>
+        <li>Wählen Sie im Dialogfeld die Manager-Node aus der Liste der Instances aus.</li>
+        <li>Klicken Sie auf "Attach Volume", um das Volume an die Manager-Node anzuhängen.</li>
+    </ol>
+    
+    <div class="note">
+        <p><strong>Hinweis:</strong> Nach dem Anhängen des Volumes an die Manager-Node müssen Sie das Volume einrichten und mounten, damit es von der E-Learning-Anwendung genutzt werden kann. Diese Schritte werden in einem späteren Abschnitt behandelt.</p>
+    </div>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

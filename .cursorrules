@@ -1,0 +1,90 @@
+# Instructions
+
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again. 
+
+You should also use the `.cursorrules` file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have a python venv in ./venv. Always use (activate) it when doing python development. First, to check whether 'uv' is available, use `which uv`. If that's the case, first activate the venv, and then use `uv pip install` to install packages. Otherwise, fall back to `pip`.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- When searching for recent news, use the current year (2025) instead of previous years, or simply use the "recent" keyword to get the latest information
+- When styling HTML pages, use a central CSS file rather than individual style blocks to maintain consistency and facilitate maintenance
+
+# Scratchpad
+
+## HTML Webpage Design Task
+
+Task: Design an HTML webpage with sidebar navigation and main content area.
+
+Requirements:
+- Layout with sidebar (table of contents) and main area
+- Base template for the main content display
+- Each section in sidebar links to separate HTML files
+- Each subsection should have its own HTML file (modified requirement)
+- Sidebar sections should be collapsible (added requirement)
+
+Plan:
+[X] Create a base HTML template with CSS styling
+[X] Design the sidebar navigation structure
+[X] Create sample content pages for demonstration
+[X] Ensure proper linking between sidebar and content files
+[X] Test navigation and layout responsiveness
+[X] Update design to have lighter sidebar background
+[X] Restructure to make each subsection its own HTML file
+[X] Add collapsible functionality to sidebar sections
+[X] Unify CSS by linking external style.css file to all HTML files
+
+Progress:
+- Created index.html with sidebar navigation and main content area using iframe
+- Added CSS styling for responsive layout and clean design
+- Added JavaScript for handling active menu highlighting
+- Created template.html as a base for content sections
+- Created sample content sections (section1.html and section2.html)
+- Modified sidebar background to be lighter and more consistent with main content
+- Restructured navigation to link to individual HTML files for each subsection
+- Created sample subsection files (section3-1.html, section3-1-1.html)
+- Added navigation between parent and child sections
+- Added proper styling for subsection pages
+- Each chapter and subchapter is now its own independent HTML file
+- Added collapsible functionality to the sidebar menu with expand/collapse buttons
+- Enhanced the CSS to support collapsible sections with visual indicators
+- Updated JavaScript to handle menu state preservation when navigating between pages
+- All HTML files now use a central external style.css file
+- Added missing styles from individual HTML files to the central style.css
+- Added content-page class to all body tags for consistent styling
+- Added image styling to the central CSS file
+
+## CSS Unification Task (COMPLETED)
+
+Task: Unify all HTML files to use the central style.css file while preserving existing styling.
+
+Approach:
+[X] Review each HTML file to understand their current styling
+[X] Add missing styles from HTML files to the central style.css
+[X] Add link to external style.css in each HTML file
+[X] Add content-page class to each body tag for consistent styling
+[X] Test to ensure existing styling is preserved
+
+Results:
+- All HTML files now link to the central style.css file
+- Removed redundant internal style blocks from each HTML file
+- Added missing styles from individual files to style.css
+- Added proper image styling to the central CSS
+- Maintained consistent styling across all pages
+- Preserved the existing look and feel of each page
+- Added appropriate body class for content pages

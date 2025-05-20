@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schritt 7: JupyterLab Image einrichten</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Schritt 7: JupyterLab Image einrichten</h1>
+    
+    <!-- Content Description -->
+    <p>JupyterHub verwaltet, wann und auf welcher Work-Node ein JupyterLab-Container gestartet werden sollte. In diesem Abschnitt betrachten wir JupyterLab genauer. Die Abbildung unten zeigt die typische JupyterLab-Umgebung, die eine leicht zugängliche Programmierumgebung direkt im Browser bietet.</p>
+    <img src="../images/Jupyterlab.png" alt="Jupyterlab" title="Jupyterlab" style="max-width: 80%; height: 80%; position: relative; left: 8%;">
+    <p>
+        Allerdings gibt es Unterschiede zwischen verschiedenen JupyterLab-Images, da unterschiedliche Kurse andere Abhängigkeiten oder Software-Bibliotheken in JupyterLab erfordern könnten. Daher ist es notwendig, ein eigenes JupyterLab-Image zu konfigurieren, um alle benötigten Bibliotheken zu installieren. Dafür wird ein Dockerfile benötigt, mit dem die Abhängigkeiten beschrieben werden.
+        In diesem Abschnitt erfahren Sie, wie man ein eigenes JupyterLab-Image mit Hilfe eines Dockerfiles erstellt. 
+    </p>
+
+    <div class="note">
+        <p>
+            <strong>Hinweis:</strong>
+            Wenn keine speziellen Bibliotheken erforderlich sind, können Sie das Standard-Image verwenden. In diesem Fall können Sie diesen Schritt überspringen und direkt zu Schritt 8 gehen.
+        </p>
+    </div>
+    
+    <p>Dieses Abschnitt gliedert sich in folgende Abschnitte:</p>
+    <ul>
+        <li><a href="section8-1.html">docker-compose.yml erstellen</a></li>
+
+    </ul>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

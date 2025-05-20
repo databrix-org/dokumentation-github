@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schritt 7: JupyterLab Image einrichten</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Schritt 7: JupyterLab Image einrichten</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt lernen Sie, wie Sie ein JupyterLab Image einrichten.
+        Dieses Image wird auf dem Manager Node erstellt und dann auf die Worker Nodes verteilt.
+        Stellen Sie sich vor, ein Student loggt sich in eine Web-Anwendung ein und möchte direkt mit dem Programmieren beginnen. Der Manager Node startet dann einen Docker Container auf einem Worker Node, sodass der Student die Rechenressourcen dort nutzen kann, um seine Programme auszuführen.
+    </p>
+
+    <h2>Dockerfile für Jupyterhub</h2>
+
+    <pre><code class="language-dockerfile">FROM jupyter/base-notebook
+
+ARG NB_USER
+USER ${NB_USER} 
+
+# Copy environment files
+COPY requirements_dhbw-kurs.txt /opt/requirements_dhbw-kurs.txt
+#COPY Assignment /home/jovyan/Assignment
+COPY info-all.json /efs/user-info/info-all.json
+COPY nbgrader_config.py /etc/jupyter/nbgrader_config.py
+COPY nbgrader_directory.py /home/jovyan/.jupyter/nbgrader_config.py
+
+
+USER root
+RUN chmod ugo+rw /etc/jupyter
+RUN rm -rf /tmp/exchange
+RUN mkdir /tmp/exchange
+RUN apt-get update && apt-get install -y graphviz
+# Set the default user
+ARG NB_USER
+USER ${NB_USER}
+# Install systemwide JupyterLab extension
+RUN pip install 'nbgrader==0.9.2'\
+    && pip install matplotlib ipympl plotly virtualenv jupyterlab_logout \
+    && pip install 'jlab_homepage==0.1.13' 'jupyterlab_forum==0.1.25'
+# Add more environment files as needed
+
+# Create Virtual environments
+#User root
+#SHELL ["/bin/bash", "-c"]
+
+RUN virtualenv /opt/conda/share/jupyter/lab/dhbw-kurs \
+    && source /opt/conda/share/jupyter/lab/dhbw-kurs/bin/activate \
+    && pip install -r /opt/requirements_dhbw-kurs.txt \
+    && python -m ipykernel install --user --name=DHBW-Kurs
+# Activate Virtual environments and install IPython kernels
+
+RUN jupyter labextension enable nbgrader:create-assignment \
+    && jupyter labextension lock nbgrader:create-assignment \
+    && jupyter labextension enable nbgrader:formgrader \
+    && jupyter labextension lock nbgrader:formgrader \
+    && jupyter labextension enable nbgrader:course-list \
+    && jupyter labextension lock nbgrader:course-list \
+    && jupyter labextension disable @jupyterlab/launcher-extension \
+    && jupyter labextension lock @jupyterlab/launcher-extension \
+    && jupyter labextension disable @jupyterlab/apputils-extension:announcements \
+    && jupyter labextension lock @jupyterlab/apputils-extension:announcements \
+    && jupyter labextension enable @jupyterlab/filebrowser-extension \
+    && jupyter labextension lock @jupyterlab/filebrowser-extension \
+    && jupyter lab build
+</code></pre>
+
+
+
+    <h2>Konfiguration Jupyterhub</h2>
+    
+    <p>Fügen Sie den folgenden Code in die Datei <strong>Requirenments_dhbw-kurs.txt</strong>. Sie sollte im selben Ordner wie die Dockerdatei gespeichert werden.</p>
+    
+    <pre><code class="language-text">ipykernel
+plotly
+pandas
+boto3
+ipympl
+matplotlib
+numpy
+seaborn
+basemap
+nbformat
+    # Add any additional packages you need
+</code></pre>
+
+    <h2>Referenzen</h2>
+
+    <ol>
+        <li><a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/" target="_blank">Offizielle Jupyterlab Image</a></li>
+        <li><a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/recipes.html#add-a-custom-conda-environment-and-jupyter-kernel" target="_blank">Kernel Installieren</a></li>
+    </ol>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

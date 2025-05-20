@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Node konfigurieren</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Worker Node konfigurieren</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt wird der Worker Node konfiguriert.
+        Im Worker-Node müssen Sie auch Docker installieren. Dann installieren Sie NFS und fügen den Worker-Node in den zuvor erstellten Swarm-Cluster ein. Auf diese Weise können wir alle Dateien und Container auf dem Worker-Node verteilen.
+    </p>
+    
+    <h2>Docker installieren</h2>
+    <p>Zuerst müssen Sie eine SSH-Verbindung zu diesem Manager herstellen. Dazu verwenden Sie den folgenden Befehl.</p>
+    <pre><code>ssh -i [privater Schlüssel] ubuntu@[hostname der Worker-Node]</code></pre>
+    <p>Dann installieren Sie Docker Engine. (Quelle: <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener noreferrer">Docker Engine installieren</a>)</p>
+    <pre><code># Add Docker's official GPG key: 
+        sudo apt-get update 
+        sudo apt-get install ca-certificates curl 
+        sudo install -m 0755 -d /etc/apt/keyrings 
+        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc 
+        sudo chmod a+r /etc/apt/keyrings/docker.asc 
+        
+        # Add the repository to Apt sources: 
+        echo \ 
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \ 
+          $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \ 
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
+        sudo apt-get update</code></pre>
+    <p>Installieren Sie dann Docker Compose.</p>
+    <pre><code>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</code></pre>
+
+    <h2>NFS installieren</h2>
+    <p>Installieren Sie Network File System mit den folgenden Befehlen. (Bitte den Befehl Schritt für Schritt ausführen.)</p>
+    <pre><code>sudo apt-get install nfs-kernel-server </code></pre>
+    <pre><code>sudo apt-get install nfs-common</code></pre>
+ 
+    <pre><code>nano /etc/exports</code></pre>
+    <pre><code>/PFAD/ZUR/FREIGABE2      *(ro,async)</code></pre>
+ 
+    <pre><code> sudo exportfs -ra </code></pre>
+ 
+    <pre><code>sudo chown -R ubuntu:users /PFAD/ZUR/FREIGABE2/DHBW-Kurs </code></pre>
+
+    <h2>Worker-Node in den Swarm-Cluster einbinden</h2>
+    <p>Fügen Sie den Worker-Node in den Swarm-Cluster ein. Dazu verwenden Sie den folgenden Befehl. Sie haben den richtigen Join Token in letztem Abschnitt erhalten.</p>
+    <pre><code>docker swarm join --token [Join Token] [hostname der Manager-Node]:2377</code></pre>
+
+    <h2>Wiederholen für alle Worker-Nodes</h2>
+    <p>Wiederholen Sie die Schritte für alle Worker-Nodes, die Sie in Schritt 1 erstellt haben.</p>
+    
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

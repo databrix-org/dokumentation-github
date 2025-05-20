@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFS Server einrichten</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Network File System</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt erfahren Sie, wie Sie einen NFS Server auf Ihrem Manager Node einrichten können.
+        Solange ein Container für die Programmierumgebung gestartet wird, wird dieses NFS-System automatisch mit diesem Container verbunden, sodass die benötigten Dateien immer im richtigen Container vorhanden sind. In diesem Abschnitt erfahren Sie, wie Sie dieses Network File System in Ihrem Swarm-Cluster konfigurieren können.
+    </p>
+
+
+    <h2>Manager Node</h2>
+    <pre><code class="language-bash">mkdir /opt/exchange_data
+nano /etc/exports
+</code></pre>
+
+    <p>Add the IPV4 Addresses of the all Worker Nodes to the file, separated by a space. Please replace the ip_worker1, ip_worker2, ip_worker3, etc. with the actual IP addresses of your Worker Nodes!</p>
+    <pre><code class="language-bash">
+/opt/exchange_data ip_worker1(rw,no_subtree_check,no_root_squash,sync) ip_worker2(rw,no_subtree_check,no_root_squash,sync) ip_worker3(rw,no_subtree_check,no_root_squash,sync) ...
+    </code></pre>
+    <p>Then export the directory:</p>
+    <pre><code class="language-bash">
+sudo exportfs -ra 
+sudo service nfs-kernel-server restart</code></pre>
+
+    <h2>Worker Node</h2>
+    <pre><code class="language-bash">cd /opt
+sudo mkdir mount
+sudo mount ipadresse_manager:/opt/exchange_data /opt/mount</code></pre>
+
+    <h2>Persistent User Volumen</h2>
+    <pre><code class="language-bash">mkdir jupyterhub-user-volumes</code></pre>
+
+
+    <h2>Referenzen</h2>
+    <ol>
+        <li><a href="https://wiki.ubuntuusers.de/NFS/" target="_blank">Ubuntu NFS</a></li>
+    </ol>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

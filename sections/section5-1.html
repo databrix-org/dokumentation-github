@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfiguration Apache2</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Konfiguration Apache2</h1>
+    
+    <!-- Content Description -->
+    <p>Der Apache2 Server liegt in Ihrer Manager Node. Sie müssen SSH zu Ihrer Manager Node und die Datei <strong>000-default.conf</strong> öffnen. Diese Datei ist die Standardkonfiguration für Apache. In der näschste Schritt werden Sie diese Datei anpassen, um die User an Single Course App zu leiten.</p>
+    <div class="note">
+        <p>Wenn Ihnen SSH nicht bekannt ist, bitte lesen Sie <a href="https://www.bw-cloud.org/de/faq/zugang" target="_blank">diese Anleitung</a>.</p>
+    </div>
+    <h2>konfigurationsdatei ersetzen</h2>
+    <p>Öffnen Sie die Konfigurationsdatei mit nano. Nano ist ein einfaches Texteditor, der in der Terminal anzeigt.</p>
+    <pre><code class="language-js">sudo nano /etc/apache2/sites-available/000-default.conf</code></pre>
+    <p>Danach sehen Sie eine Default Konfiguration in dieser Dokument. Sie müssen dieses mit Ihrer folgende Konfiguration ersetzen.</p>
+    <pre><code class="language-js">#Listen 80 
+&lt;VirtualHost *:80&gt;
+  ServerName example.org
+
+  Redirect / https://example/
+&lt;/VirtualHost&gt;
+
+#Listen 443
+&lt;VirtualHost *:443&gt;
+  ServerName example
+
+  ServerSignature Off
+  SSLProxyEngine on
+  # Enable HTTP/2, if available
+  Protocols h2 http/1.1
+
+  # HTTP Strict Transport Security (mod_headers is required) (63072000 seconds)
+  Header always set Strict-Transport-Security "max-age=63072000"
+
+  # Configure SSL
+  SSLEngine on
+  SSLCertificateFile /etc/letsencrypt/live/example.org/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/example.org/privkey.pem
+  SSLOpenSSLConfCmd DHParameters /etc/ssl/certs/dhparams.pem
+  # Intermediate configuration from SSL-config.mozilla.org (2022-03-03)
+  # Please note, that this configuration might be outdated - please update it accordingly using https://ssl-config.mozilla
+  SSLProtocol             all -SSLv3 -TLSv1 -TLSv1.1
+  SSLCipherSuite          ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+  SSLHonorCipherOrder     off
+  SSLSessionTickets       off
+  
+  # Jupyter-collaboration URL contains %, Apache must % understand
+  AllowEncodedSlashes On
+#----------------------Shibboleth-------------------------------
+  UseCanonicalName On
+  Include /etc/shibboleth-ds/shibboleth-ds.conf
+  Redirect seeother /shibboleth https://example.org/Shibboleth.sso/Metadata
+  RedirectMatch /start-session$ /Shibboleth.sso/Login
+
+  &lt;Location /Shibboleth.sso&gt;
+    AuthType None
+    Require all granted
+  &lt;/Location&gt;
+ 
+  &lt;Location /shibboleth-sp&gt;
+    AuthType None
+    Require all granted
+  &lt;/Location&gt;
+
+  Alias /shibboleth-sp/main.css /usr/share/shibboleth/main.css
+#----------------------Jupyterhub-------------------------------
+  &lt;Location /&gt;
+    AuthType shibboleth
+    Require shibboleth
+  &lt;/Location&gt;
+
+  &lt;Location /dhbw-login&gt;
+    ProxyPreserveHost on
+    ShibRequireSession On
+    Require valid-user
+    ShibUseHeaders On
+    Redirect /dhbw-login http://example.org/jupyterhub
+  &lt;/Location&gt;
+  
+  RewriteEngine On
+
+  RewriteCond %{HTTP:Connection} Upgrade [NC]
+  RewriteCond %{HTTP:Upgrade} websocket [NC]
+  RewriteRule /jupyterhub/(.*) ws://ipv4_managernode:8000/jupyterhub/$1 [P,L]
+  RewriteRule /jupyterhub/(.*) http://ipv4_managernode:8000/jupyterhub/$1 [P,L]
+
+  &lt;Location /jupyterhub&gt;
+    RewriteEngine On
+    ProxyPreserveHost on
+    # separate Shibboleth Authen. and Jupyterhub to avoid CROS error.
+    ShibRequestSetting requireSession off
+    ShibUseHeaders On
+
+    ProxyPass        http://ipv4_managernode:8000/jupyterhub
+    ProxyPassReverse http://ipv4_managernode:8000/jupyterhub
+  &lt;/Location&gt;
+</code></pre>
+
+    <h2>Single Kurs app</h2>
+    <pre><code class="language-js">#----------------------static files-----------------------------
+  # Alias for Static Files
+  Alias /static/ /opt/SingleCourse/static_volume/
+  &lt;Directory /opt/SingleCourse/static_volume&gt;
+      Require all granted
+  &lt;/Directory&gt;
+
+  # Alias for Media Files
+  Alias /data/ /opt/SingleCourse/data_volume/
+  &lt;Directory /opt/SingleCourse/SingleCourseWebApp/data_volume&gt;
+      Require all granted                                                                                            
+  &lt;/Directory&gt;
+
+   &lt;Location /course&gt;
+    #AuthType shibboleth
+    #ShibRequestSetting requireSession 1
+    ShibUseHeaders On
+    RewriteEngine On
+    ProxyPreserveHost On
+
+    # Ensure trailing slash
+    # RewriteRule ^/$ /jupyter/ [R]
+
+    ProxyPass http://193.196.55.219:8008/course
+    ProxyPassReverse http://193.196.55.219:8008/course
+  &lt;/Location&gt;
+
+  &lt;Location /&gt;
+    AuthType shibboleth
+    ShibRequestSetting requireSession 1
+    require valid-user
+    RequestHeader set HTTP_MAIL %{mail}e env=mail
+    RequestHeader set HTTP_GIVENNAME %{givenName}e env=givenName
+    RequestHeader set HTTP_SN %{sn}e env=sn
+    RequestHeader set HTTP_UID %{uid}e env=uid
+  &lt;/Location&gt;
+
+  &lt;Location /admin&gt;
+
+    ShibRequestSetting requireSession off
+    ShibUseHeaders On
+    RewriteEngine On
+    ProxyPreserveHost On
+
+
+    ProxyPass http://193.196.55.219:8008/admin
+    ProxyPassReverse http://193.196.55.219:8008/admin
+  &lt;/Location&gt;
+&lt;/VirtualHost&gt;</code></pre>
+
+    <h2>Restart Service</h2>
+    <p>Um die Änderungen zu übernehmen, müssen Sie den Apache Service neu starten.</p>
+    <pre><code class="language-js">sudo systemctl restart apache2</code></pre>
+
+    <h2>References</h2>
+    <ol>
+        <li><a href="https://jupyterhub.readthedocs.io/en/stable/howto/configuration/config-proxy.html" target="_blank">Generelle Apache Konfiguration für Jupyterhub</a></li>
+        <li><a href="https://doku.tid.dfn.de/de:shibsp" target="_blank">Generelle Apache Konfiguration für Shibboleth SP</a></li>
+        <li><a href="https://shibboleth.atlassian.net/wiki/spaces/SHIB2/pages/2577072327/NativeSPApacheConfig" target="_blank">Generelle Apache Konfiguration für Shibboleth SP 2</a></li>
+        <li><a href="https://discourse.jupyter.org/t/jupyterhub-try-to-make-preflight-request-to-shibboleth-idp/24853/4" target="_blank">Apache Konfiguration für Vermeidung CORS Error in Browser</a></li>
+        <li><a href="https://shibboleth.atlassian.net/wiki/spaces/SHIB2/pages/2577072327/NativeSPApacheConfig#NativeSPApacheConfig-AuthConfigOptions" target="_blank">Apache Konfiguration für bypassing Shibboleth Authentification</a></li>
+        <li><a href="https://discourse.jupyter.org/t/cant-connect-to-kernel/24705/14" target="_blank">Apache Konfiguration für jupyter-collaboration extension</a></li>
+        <li><a href="https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20Debian-Ubuntu%20Linux.md" target="_blank">Anleitung für Installation Apache mit Shibboleth</a></li>
+    </ol>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+
