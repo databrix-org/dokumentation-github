@@ -54,9 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!iframe || !iframe.src || iframe.src === 'about:blank') return;
         
         const currentPage = iframe.src.split('/').pop();
+        console.log('Current page:', currentPage);
         
-        // Clear all active states
-        links.forEach(link => link.classList.remove('active'));
+        // Clear all active states first
+        links.forEach(link => {
+            link.classList.remove('active');
+        });
         
         // Set current page link as active
         let activeFound = false;
@@ -75,10 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // If no active link found, try using default active link
-        if (!activeFound && links.length > 0) {
-            // When no matching links, don't automatically highlight any link
-        }
+        return activeFound;
     }
     
     // Set initial active link
@@ -119,13 +119,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Set the currently clicked link as active
             this.classList.add('active');
             
-            // Check if link points to valid file
-            const href = this.getAttribute('href');
-            const linkPage = href.split('/').pop();
+            // Store the current page for reference
+            sessionStorage.setItem('currentActivePage', this.href.split('/').pop());
             
             // If link points to valid file, expand parent directory
             const parentList = this.closest('.toc-sublist');
             if (parentList) {
+                // First close all sublists
+                document.querySelectorAll('.toc-sublist').forEach(sl => {
+                    if (sl !== parentList) {
+                        sl.classList.remove('active');
+                        sl.style.maxHeight = '0px';
+                    }
+                });
+                
+                // Then open the parent list
                 parentList.classList.add('active');
                 parentList.style.maxHeight = parentList.scrollHeight + 'px';
             }
@@ -142,6 +150,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 sublist.style.maxHeight = '0px';
             }
         });
+        
+        // Check if we have a stored active page and highlight it
+        const storedActivePage = sessionStorage.getItem('currentActivePage');
+        if (storedActivePage) {
+            links.forEach(link => {
+                const linkPage = link.href.split('/').pop();
+                if (linkPage === storedActivePage) {
+                    // Remove active class from all links
+                    links.forEach(l => l.classList.remove('active'));
+                    // Add active class to this link
+                    link.classList.add('active');
+                    
+                    // Expand parent directory if needed
+                    const parentList = link.closest('.toc-sublist');
+                    if (parentList) {
+                        parentList.classList.add('active');
+                        parentList.style.maxHeight = parentList.scrollHeight + 'px';
+                    }
+                }
+            });
+        } else {
+            // If no stored page, highlight based on current iframe content
+            highlightActiveLink();
+        }
     }, 100);
 
     // Code Block Copy Functionality
