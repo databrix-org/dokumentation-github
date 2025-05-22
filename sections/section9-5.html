@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Compose</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Docker Compose</h1>
+    <p>Jetzt haben Sie alles für das Deployment konfiguriert. Folgende können wir dann mit docker compose deployen.</p>
+
+<pre><code class="language-bash">cd /opt/WebApp</code></pre>
+<p>Ersetzen Sie den Namen der Service mit Ihrem Name Z.B. Ringvorlesung</p>
+<pre><code class="language-bash">docker stack deploy -c docker-compose.yaml [singlekursweb]</code></pre>
+<p>Wenn Sie alles richtig gemacht haben, sollten Sie folgende Ausgabe sehen:</p>
+
+<pre><code>class="language-bash">Creating service singlekursweb_singlekursweb
+Creating service singlekursweb_singlekursweb
+</code></pre>
+
+<p>Mit folgende Befehle können Sie auch die Service Logs sehen.</p>
+
+<pre><code class="language-bash">docker service ls</code></pre>
+
+<p>Wenn Sie die Single Kurs Web App stoppen möchten, führen Sie einfach folgenden Befehl aus</p>
+<pre><code class="language-bash">docker stack rm [singlekursweb]</code></pre>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

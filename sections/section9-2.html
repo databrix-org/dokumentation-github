@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presistent volume</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>Persistent Volume</h1>
+    <p>Für die Web-App benötigen wir ein persistent volume, um die Statische Styling, Python Files und Videos der Web-App zu speichern. 
+Vorher im Schritt 6 haben wir schon ein Directory für JupyterHub erstellt. Wir können das Persistent Volume in gleichem Directory erstellen.</p>
+
+<pre><code class="language-bash">cd /opt/WebApp
+mkdir static_volume
+chmod 777 static_volume
+</code></pre>
+<p>Außerdem checken Sie noch einmal ob folgende Directory existiert. Hier werden die Media und python files gespeichert.</p>
+<pre><code class="language-bash">/opt/exchange_data/data_kurs_app</code></pre>
+
+
+
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+
