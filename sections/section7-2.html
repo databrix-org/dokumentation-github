@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JupyterHub Datenbank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>JupyterHub Datenbank</h1>
+    
+    <!-- Content Description -->
+    <p>In diesem Abschnitt lernen Sie, wie Sie eine PostgreSQL Datenbank für JupyterHub einrichten. 
+        Wir benötigen diese Datenbank, um auf alle User Anfragen schnell zu antworten. Auch wenn die Webapp kurzzeitig ausfällt, bleiben die Daten erhalten.
+    </p>
+
+    <h2>Persistent Volume für Datenbank</h2>
+    <p>Erstellen Sie ein Directory für die persistente Datenbank:</p>
+    <pre><code class="language-bash">mkdir jupyterhub-db</code></pre>
+
+
+    <h2>Referecnces</h2>
+    <ol>
+        <li><a href="https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/">Use PostgreSQL Docker Image</a></li>
+    </ol>
+
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+

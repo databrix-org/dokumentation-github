@@ -17,9 +17,19 @@
 
 
     <h2>Manager Node</h2>
-    <pre><code class="language-bash">mkdir /opt/exchange_data
-nano /etc/exports
-</code></pre>
+    <p>Create a directory for the NFS share:</p>
+    <pre><code class="language-bash">mkdir /opt/exchange_data</code></pre>
+
+    <p>Create directories for files that should be shared:</p>
+    <pre><code class="language-bash">mkdir /opt/exchange_data/DHBW-Kurs
+mkdir /opt/exchange_data/data_kurs_app</code></pre>
+    
+    <p>Let these directories can be read and written by all Users:</p>
+    <pre><code class="language-bash">chmod 777 /opt/exchange_data/DHBW-Kurs
+chmod 777 /opt/exchange_data/data_kurs_app</code></pre>
+
+    <p>Edit the exports file:</p>
+    <pre><code class="language-bash">nano /etc/exports</code></pre>
 
     <p>Add the IPV4 Addresses of the all Worker Nodes to the file, separated by a space. Please replace the ip_worker1, ip_worker2, ip_worker3, etc. with the actual IP addresses of your Worker Nodes!</p>
     <pre><code class="language-bash">
@@ -29,15 +39,6 @@ nano /etc/exports
     <pre><code class="language-bash">
 sudo exportfs -ra 
 sudo service nfs-kernel-server restart</code></pre>
-
-    <h2>Worker Node</h2>
-    <pre><code class="language-bash">cd /opt
-sudo mkdir mount
-sudo mount ipadresse_manager:/opt/exchange_data /opt/mount</code></pre>
-
-    <h2>Persistent User Volumen</h2>
-    <pre><code class="language-bash">mkdir jupyterhub-user-volumes</code></pre>
-
 
     <h2>Referenzen</h2>
     <ol>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFS mounten</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>NFS mounten</h1>
+    
+    <!-- Content Description -->
+    <p>Im letzten Abschnitt haben Sie einen NFS Server auf Ihrem Manager Node eingerichtet. In diesem Abschnitt erfahren Sie, wie Sie dieses Network File System auf Ihren Worker Nodes mounten können. Damit die Worker Nodes die Dateien aus dem NFS-System lesen und schreiben können.
+    </p>
+
+    <h2>Worker Node</h2>
+    <p>Die NFS Directory auf den Worker Nodes mounten: (Bitte die IP Adresse des Manager Nodes ersetzen)</p>
+    <pre><code class="language-bash">cd /opt
+sudo mkdir mount
+sudo mount ipadresse_manager:/opt/exchange_data /opt/mount</code></pre>
+
+    <h2>Persistent User Volumen</h2>
+    <p>Erstellen Sie ein Verzeichnis für die persistenten User Volumen:</p>
+    <pre><code class="language-bash">mkdir jupyterhub-user-volumes</code></pre>
+
+
+    <h2>Referenzen</h2>
+    <ol>
+        <li><a href="https://wiki.ubuntuusers.de/NFS/" target="_blank">Ubuntu NFS</a></li>
+    </ol>
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+
