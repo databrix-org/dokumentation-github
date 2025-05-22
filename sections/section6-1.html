@@ -11,18 +11,13 @@
     <h1>Shibboleth Konfiguration</h1>
     
     <!-- Content Description -->
-    <p>In diesem Abschnitt lernen Sie, wie Sie eine Shibboleth Authentifizierung einrichten.
-        Diese Authentifizierung wird auf dem Manager Node erstellt und dann auf die Worker Nodes verteilt.
-        Stellen Sie sich vor, ein Student loggt sich in eine Web-Anwendung ein und möchte direkt mit dem Programmieren beginnen. Der Manager Node startet dann einen Docker Container auf einem Worker Node, sodass der Student die Rechenressourcen dort nutzen kann, um seine Programme auszuführen.
+    <p>Im Schritt 2 haben Sie die Shibboleth SP installiert. Hier werden Sie Ihre Shibboleth SP konfigurieren, um die Userdaten von der DHBW IT-Abteilung zu erhalten.
     </p>
 
-
-
-    <h2>Konfiguration Shibboleth</h2>
-
-    <h3>shibboleth.xml</h3>
-    <p><strong>shibbboleth.xml</strong> wird für die Kommunikation mit dem IdP zur Authentifizierung des Benutzers verwendet.</p>
-
+    <h2>Konfiguration Shibboleth SP</h2>
+    <p><strong>shibbboleth.xml</strong> ist die Konfigurationsdatei für die Shibboleth SP. Diese Datei wird für die Kommunikation mit dem Identity Provider (User Datenbank) zur Authentifizierung des Benutzers verwendet.</p>
+    <pre><code class="language-bash">nano /etc/shibboleth/shibboleth2.xml</code></pre>
+    <p>Nach der Öffnung der Datei, müssen Sie die XML Datei mit folgendem Inhalt anpassen: (ersetzen Sie die example.org und Kontaktinformationen durch Manager Node Domain und Ihre Kontaktinformationen)</p>
     <pre><code class="language-xml">
 &lt;SPConfig  xmlns="urn:mace:shibboleth:3.0:native:sp:config"
     xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
@@ -140,30 +135,27 @@
 &lt;/SPConfig&gt;
     </code></pre>
 
-    <h3>idpselect_condig.js</h3>
-    <p><strong>idpselect_condig.js</strong> (in Shibboleth-ds Odner) muss auch konfiguriert werden, damit VM von Shibboleth IdP erlaubt ist.</p>
-    <p>Add this:</p>
-
-    <pre><code class="language-js">
- this.redirectAllow = [ "^https:\/\/1985609f-7839-4819-8840-2d38548e4ea5.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ,"^https:\/\/example\.com\/Shibboleth\.sso\/Login.*$" ];
- this.returnWhiteList = [ "^https:\/\/example\.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ];
-    </code></pre>
-
     <h3>attribute-map.xml</h3>
     <p><strong>attribute-map.xml</strong> definiert welche Attribution werden von shibboleth angezeigt und in http Headers hinzugefügt. 
     Folgende Attribution zeigt ob der User ein Mitarbeiter oder ein Student ist. Diese müssen Sie in <strong>attribute-map.xml</strong> schreiben.</p>
 
-    <pre><code class="language-xml">
-&lt;Attribute name="urn:mace:dir:attribute-def:eduPersonAffiliation" id="unscoped-affiliation"&gt;
+    <pre><code class="language-bash">nano /etc/shibboleth/attribute-map.xml</code></pre>
+    <pre><code class="language-xml">&lt;Attribute name="urn:mace:dir:attribute-def:eduPersonAffiliation" id="unscoped-affiliation"&gt;
     &lt;AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/&gt;
-&lt;/Attribute&gt;
-    </code></pre>
+&lt;/Attribute&gt;</code></pre>
 
-    <p>Nach der Konfiguration müssen die Dienste neu gestartet werden:</p>
-    <pre><code class="language-bash">
-systemctl restart shibd
-systemctl restart apache2
-    </code></pre>
+
+    <h3>idpselect_condig.js</h3>
+    <p><strong>idpselect_condig.js</strong> (in Shibboleth-ds Odner) muss auch konfiguriert werden, damit VM von Shibboleth IdP erlaubt ist.</p>
+    <p>Öffnen Sie die Datei und folgende Anpassungen vornehmen:</p>
+    <pre><code class="language-bash">nano /etc/shibboleth-ds/idpselect_config.js</code></pre>
+    <pre><code class="language-js">this.redirectAllow = [ "^https:\/\/1985609f-7839-4819-8840-2d38548e4ea5.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ,"^https:\/\/example\.com\/Shibboleth\.sso\/Login.*$" ];
+this.returnWhiteList = [ "^https:\/\/example\.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ];</code></pre>
+
+
+    <p>Nach der Konfiguration müssen Shibboleth SP und Apache neu gestartet werden:</p>
+    <pre><code class="language-bash">systemctl restart shibd
+systemctl restart apache2</code></pre>
 
     <h3>Referenzen:</h3>
     <ol>
@@ -174,5 +166,5 @@ systemctl restart apache2
 <script src="../js/script.js"></script>
 <script src="../js/code-copy.js"></script>
 </body>
-</html> 
+</html>
 

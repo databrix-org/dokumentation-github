@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML Datei erstellen</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="content-page">
+    <!-- Content Title -->
+    <h1>YAML Datei erstellen</h1>
+    
+    <!-- Content Description -->
+    <p>Wir verwenden hier YAML Datei, um Jupyterhub und sein Datenbank mit docker zu deployen.
+    </p>
+    <h2>YAML Datei erstellen</h2>
+    <p>Erstellen Sie eine YAML Datei für JupyterHub.</p>
+    <pre><code class="language-bash">nano docker-compose.yml</code></pre>
+    <p>Fügen Sie den folgenden Code in die Datei ein.</p>
+    <pre><code class="language-yaml">services:
+    jupyterhub:
+
+    depends_on:
+        - jupyterhub-database
+
+    image: guyq1997/jupyterhub-dhbw:v5
+
+    volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock:rw"
+        - "./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py"
+        - "./forum_service.py:/srv/jupyterhub/forum_service.py"
+        - "./idle_culler.py:/srv/jupyterhub/idle_culler.py"
+        - "./jupyterhub-datavolume:/data"
+        - "./forum-database/forumbase.db:/opt/forum-database/forumbase.db"
+        - "/opt/exchange_data:/srv/ngshare"
+
+    environment:
+        DOCKER_NETWORK_NAME: jupyterhub_network
+        POSTGRES_DB: jupyterhub
+        POSTGRES_HOST: jupyterhub-database
+        POSTGRES_PASSWORD: databrix
+
+    ports:
+        - "8000:8000"
+
+    links:
+    - jupyterhub-database
+
+    networks:
+        - jupyterhub_network
+
+    command: >
+        jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+
+    deploy:
+        placement:
+        constraints:
+            - node.role == manager
+
+    jupyterhub-database:
+    image: postgres:16
+    restart: always
+    environment:
+        POSTGRES_DB: jupyterhub
+        PGDATA: /var/lib/postgresql/data
+        POSTGRES_PASSWORD: databrix
+    volumes:
+        - "./database-volume:/var/lib/postgresql/data"
+    networks:
+        - jupyterhub_network
+
+        deploy:
+        placement:
+        constraints:
+            - node.role == manager
+
+
+networks:
+    jupyterhub_network:
+    name: jupyterhub_network
+    driver: overlay
+    attachable: true
+</code></pre>
+
+<div class="note">
+    <p><strong>Achtung:</strong> Momentan müssen Sie noch nicht die YAML Datei via Docker deployen. Wir werden später noch ein E-Learning App hier hinzufügen.</p>
+</div>
+
+<script src="../js/script.js"></script>
+<script src="../js/code-copy.js"></script>
+</body>
+</html> 
+
