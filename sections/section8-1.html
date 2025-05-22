@@ -16,7 +16,13 @@
         Stellen Sie sich vor, ein Student loggt sich in eine Web-Anwendung ein und möchte direkt mit dem Programmieren beginnen. Der Manager Node startet dann einen Docker Container auf einem Worker Node, sodass der Student die Rechenressourcen dort nutzen kann, um seine Programme auszuführen.
     </p>
 
-    <h2>Dockerfile für Jupyterhub</h2>
+    <h2>Dockerfile für Jupyterlab</h2>
+
+    <p>Hier verwenden wir das Basis-Image von Jupyterlab, danach zusätzliche Abhängigkeiten und Software-Bibliotheken im Basis-Image installieren.
+        Diese Abhängigkeiten werden in der Datei <strong>requirements_dhbw-kurs.txt</strong> beschrieben.
+    </p>
+
+    <p>Fügen Sie den folgenden Code in die Datei <strong>Dockerfile</strong>. Sie sollte im selben Ordner wie die Dockerdatei gespeichert werden.</p>
 
     <pre><code class="language-dockerfile">FROM jupyter/base-notebook
 
@@ -43,7 +49,7 @@ USER ${NB_USER}
 RUN pip install 'nbgrader==0.9.2'\
     && pip install matplotlib ipympl plotly virtualenv jupyterlab_logout \
     && pip install 'jlab_homepage==0.1.13' 'jupyterlab_forum==0.1.25'
-# Add more environment files as needed
+# Add more libraries as needed
 
 # Create Virtual environments
 #User root
@@ -54,25 +60,8 @@ RUN virtualenv /opt/conda/share/jupyter/lab/dhbw-kurs \
     && pip install -r /opt/requirements_dhbw-kurs.txt \
     && python -m ipykernel install --user --name=DHBW-Kurs
 # Activate Virtual environments and install IPython kernels
-
-RUN jupyter labextension enable nbgrader:create-assignment \
-    && jupyter labextension lock nbgrader:create-assignment \
-    && jupyter labextension enable nbgrader:formgrader \
-    && jupyter labextension lock nbgrader:formgrader \
-    && jupyter labextension enable nbgrader:course-list \
-    && jupyter labextension lock nbgrader:course-list \
-    && jupyter labextension disable @jupyterlab/launcher-extension \
-    && jupyter labextension lock @jupyterlab/launcher-extension \
-    && jupyter labextension disable @jupyterlab/apputils-extension:announcements \
-    && jupyter labextension lock @jupyterlab/apputils-extension:announcements \
-    && jupyter labextension enable @jupyterlab/filebrowser-extension \
-    && jupyter labextension lock @jupyterlab/filebrowser-extension \
-    && jupyter lab build
 </code></pre>
 
-
-
-    <h2>Konfiguration Jupyterhub</h2>
     
     <p>Fügen Sie den folgenden Code in die Datei <strong>Requirenments_dhbw-kurs.txt</strong>. Sie sollte im selben Ordner wie die Dockerdatei gespeichert werden.</p>
     
@@ -88,6 +77,10 @@ basemap
 nbformat
     # Add any additional packages you need
 </code></pre>
+
+    <p>Erstellen Sie jetzt Ihre Jupyterlab Image mit folgendem Befehl:</p>
+
+    <pre><code class="language-bash">docker build -t [Name des Images] .</code></pre>
 
     <h2>Referenzen</h2>
 

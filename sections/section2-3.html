@@ -17,17 +17,26 @@
     <p>Folgen Sie diesen Schritten, um eine neue Sicherheitsgruppe zu erstellen:</p>
     <ol>
         <li>Navigieren Sie im linken Menü des bwCloud-Dashboards zu "Network" und dann zu "Security Groups".</li>
-        <li>Klicken Sie auf die Schaltfläche "Create Security Group".</li>
-        <li>Geben Sie der Sicherheitsgruppe einen Namen (z.B. "e-learning-security") und eine Beschreibung.</li>
-        <li>Klicken Sie auf "Create Security Group".</li>
+        <li>Klicken Sie auf die Schaltfläche "Manage Rules".</li>
+        <img src="../images/manage_rules.png" alt="Sicherheitsgruppe erstellen" title="Sicherheitsgruppe erstellen" style="max-width: 100%; height: auto;">
     </ol>
-    <img src="../images/manage_rules.png" alt="Sicherheitsgruppe erstellen" title="Sicherheitsgruppe erstellen" style="max-width: 80%; height: auto;">
+    
     
     <h2>Regeln für die Sicherheitsgruppe hinzufügen</h2>
     <p>Nach dem Erstellen der Sicherheitsgruppe müssen Sie Regeln hinzufügen, um bestimmte Arten von Netzwerkverkehr zuzulassen:</p>
     
+    <h3>Interne Kommunikation in Docker Swarm Cluster</h3>
+    <p>Sie müssen die Kommunikation zwischen den Knoten in Docker Swarm Cluster erlauben, um die interne Kommunikation in Docker Swarm Cluster zu ermöglichen.</p>
+    <ol>
+        <li>Klicken Sie auf die Schaltfläche "Add Rule".</li>
+        <li>Wählen Sie "All TCP" aus.</li>
+        <li>Geben Sie bei CIDR die IP-Adresse von Ihre VM ein. (folgende Abbildung zeigt ein Beispiel)</li>
+        <img src="../images/internal_communication.png" alt="Sicherheitsgruppe zuweisen" title="Sicherheitsgruppe einer Instanz zuweisen" style="max-width: 60%; height: 60%;">
+        <li>Klicken Sie auf "Save" und das gleiche für die andere Instanz wiederholen.</li>
+    </ol>
+    
     <h3>Eingehende Regeln (Ingress Rules)</h3>
-    <p>Klicken Sie auf der Seite der neu erstellten Sicherheitsgruppe auf "Add Rule" und fügen Sie die folgenden Regeln für eingehenden Verkehr hinzu:</p>
+    <p>Ausserdem müssen Sie die Regeln für eingehenden Verkehr über Internet erlauben.</p>
     
     <table>
         <thead>
@@ -61,45 +70,12 @@
                 <td>0.0.0.0/0</td>
                 <td>Ermöglicht HTTPS-Zugriff von überall</td>
             </tr>
-            <tr>
-                <td>JupyterHub</td>
-                <td>Custom TCP Rule</td>
-                <td>8000-8100</td>
-                <td>0.0.0.0/0</td>
-                <td>Ermöglicht Zugriff auf JupyterHub und einzelne Notebooks</td>
-            </tr>
-            <tr>
-                <td>Docker Swarm</td>
-                <td>Custom TCP Rule</td>
-                <td>2377</td>
-                <td>10.0.0.0/8</td>
-                <td>Docker Swarm Cluster Kommunikation</td>
-            </tr>
-            <tr>
-                <td>Docker Registry</td>
-                <td>Custom TCP Rule</td>
-                <td>5000</td>
-                <td>10.0.0.0/8</td>
-                <td>Docker Registry Kommunikation</td>
-            </tr>
         </tbody>
     </table>
     
-    <div class="warning">
-        <p><strong>Warnung:</strong> Aus Sicherheitsgründen sollten Sie in einer Produktionsumgebung den Zugriff auf die IP-Adressen einschränken, die Zugriff benötigen, anstatt 0.0.0.0/0 zu verwenden, das Zugriff von überall aus ermöglicht.</p>
-    </div>
-    
-    <h3>Sicherheitsgruppe den Instanzen zuweisen</h3>
-    <p>Nachdem Sie die Sicherheitsgruppe mit den erforderlichen Regeln erstellt haben, müssen Sie sie Ihren VM-Instanzen zuweisen:</p>
-    <ol>
-        <li>Navigieren Sie zu "Compute" und dann zu "Instances".</li>
-        <li>Klicken Sie für jede Instanz auf das Dropdown-Menü und wählen Sie "Edit Security Groups".</li>
-        <li>Wählen Sie im Dialogfeld Ihre neu erstellte Sicherheitsgruppe aus und klicken Sie auf "Save".</li>
-    </ol>
-    <img src="../images/internal_communication.png" alt="Sicherheitsgruppe zuweisen" title="Sicherheitsgruppe einer Instanz zuweisen" style="max-width: 80%; height: auto;">
     
     <div class="note">
-        <p><strong>Hinweis:</strong> Stellen Sie sicher, dass alle Ihre VMs (sowohl Manager als auch Worker Nodes) dieselbe Sicherheitsgruppe verwenden, um eine reibungslose Kommunikation innerhalb des Clusters zu gewährleisten.</p>
+        <p><strong>Hinweis:</strong> Stellen Sie sicher, dass alle Ihre VMs (sowohl Manager als auch Worker Nodes) dieselbe Sicherheitsgruppe verwenden (In diesem Fall "default"), um eine reibungslose Kommunikation innerhalb des Clusters zu gewährleisten.</p>
     </div>
 <script src="../js/script.js"></script>
 <script src="../js/code-copy.js"></script>

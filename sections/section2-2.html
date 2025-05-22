@@ -15,7 +15,7 @@
     
     <h2>Virtuelle Maschinen starten</h2>
     <p>Um die VMs zu erstellen, navigieren Sie zur Seite "Instances" in der bwCloud-Benutzeroberfläche.</p>
-    <img src="../images/Launch_instance.png" alt="VM Instanzen erstellen" title="Virtuelle Maschinen erstellen" style="max-width: 80%; height: auto;">
+    
     
     <p>Für die E-Learning-Anwendung benötigen Sie folgende VMs:</p>
     <ul>
@@ -26,13 +26,16 @@
     <h3>Schritte zum Erstellen einer VM:</h3>
     <ol>
         <li>Klicken Sie auf die Schaltfläche "Launch Instance" auf der Seite "Instances".</li>
+        <img src="../images/Launch_instance.png" alt="VM Instanzen erstellen" title="Virtuelle Maschinen erstellen" style="max-width: 80%; height: auto;">
         <li>Wählen Sie im Dialogfeld "Launch Instance" die Registerkarte "Details" und geben Sie einen Namen für Ihre VM ein.</li>
+        <img src="../images/launch_details.png" alt="VM Instanzen erstellen" title="Virtuelle Maschinen erstellen" style="max-width: 80%; height: auto;">
         <li>Wählen Sie die Registerkarte "Source" und dann ein Ubuntu 20.04 Image aus der Liste.</li>
         <li>Wählen Sie die Registerkarte "Flavor" und wählen Sie die für den Knoten geeignete Flavor (z. B. m1.medium für Manager, m1.large für Worker).</li>
         <li>Wählen Sie die Registerkarte "Networks" und wählen Sie das Netzwerk "provider_net_dhbw".</li>
         <li>Wählen Sie die Registerkarte "Security Groups" und wählen Sie die Sicherheitsgruppe "default" (wir werden später eine eigene Sicherheitsgruppe erstellen).</li>
         <li>Wählen Sie die Registerkarte "Key Pair", um ein Schlüsselpaar zu importieren oder zu erstellen. Wenn Sie noch keines haben, können Sie auf "Create Key Pair" klicken.</li>
         <li>Klicken Sie auf "Launch Instance", um die VM zu erstellen.</li>
+        
     </ol>
     
     <div class="note">
