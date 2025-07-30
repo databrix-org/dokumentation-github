@@ -39,13 +39,7 @@
     <p>Installieren Sie Network File System mit den folgenden Befehlen. (Bitte den Befehl Schritt für Schritt ausführen.)</p>
     <pre><code>sudo apt-get install nfs-kernel-server </code></pre>
     <pre><code>sudo apt-get install nfs-common</code></pre>
- 
-    <pre><code>nano /etc/exports</code></pre>
-    <pre><code>/PFAD/ZUR/FREIGABE2      *(ro,async)</code></pre>
- 
-    <pre><code> sudo exportfs -ra </code></pre>
- 
-    <pre><code>sudo chown -R ubuntu:users /PFAD/ZUR/FREIGABE2/DHBW-Kurs </code></pre>
+
 
     <h2>Worker-Node in den Swarm-Cluster einbinden</h2>
     <p>Fügen Sie den Worker-Node in den Swarm-Cluster ein. Dazu verwenden Sie den folgenden Befehl. Sie haben den richtigen Join Token in letztem Abschnitt erhalten.</p>

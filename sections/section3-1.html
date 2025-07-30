@@ -11,33 +11,32 @@
     <h1>Manager Node konfigurieren</h1>
     
     <!-- Content Description -->
-    <p>Die Manager-Nodes werden sowohl die E-Learning-Applikation als auch JupyterHub implementieren. Das bedeutet, dass diese Manager-Nodes den Benutzer einem freien Worker-Node zuweisen, wenn er intensive Rechenressourcen für die Programmierung benötigt. 
-        Außerdem werden die für die Programmierung erforderlichen Dateien von den Manager-Nodes auf die Worker-Nodes übertragen. 
-        In diesem Abschnitt werden wir die Manager-Nodes so konfigurieren, dass sie zunächst als Manager fungieren, um alle anderen Worker-Nodes zu verwalten. Zweitens sorgen sie für die Verteilung der Dateien über das Netzwerkdateisystem.</p>
-    
+    <p>Die Manager-Nodes werden sowohl die E-Learning-Applikation als auch JupyterHub implementieren. Das bedeutet, dass diese Manager-Nodes den Benutzer einem freien Worker-Node zuweisen, wenn er intensive Rechenressourcen für die Programmierung benötigt. Außerdem werden die für die Programmierung erforderlichen Dateien von den Manager-Nodes auf die Worker-Nodes übertragen. In diesem Abschnitt werden wir die Manager-Nodes so konfigurieren, dass sie zunächst als Manager fungieren, um alle anderen Worker-Nodes zu verwalten. Zweitens sorgen sie für die Verteilung der Dateien über das Netzwerkdateisystem.</p>
     
     <h2>Docker installieren</h2>
     <p>Zuerst müssen Sie eine SSH-Verbindung zu diesem Manager herstellen. Dazu verwenden Sie den folgenden Befehl.</p>
     <pre><code>ssh -i [privater Schlüssel] ubuntu@[hostname der Manager-Node]</code></pre>
     <p>Dann installieren Sie Docker Engine. (Quelle: <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener noreferrer">Docker Engine installieren</a>)</p>
-    <pre><code># Add Docker's official GPG key: 
-        sudo apt-get update 
-        sudo apt-get install ca-certificates curl 
-        sudo install -m 0755 -d /etc/apt/keyrings 
-        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc 
-        sudo chmod a+r /etc/apt/keyrings/docker.asc 
+    <pre><code>sudo -i</code></pre>
+    <pre><code># Add Docker's official GPG key:
+        sudo apt-get update
+        sudo apt-get install ca-certificates curl
+        sudo install -m 0755 -d /etc/apt/keyrings
+        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        sudo chmod a+r /etc/apt/keyrings/docker.asc
         
-        # Add the repository to Apt sources: 
-        echo \ 
-          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \ 
-          $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \ 
-          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
+        # Add the repository to Apt sources:
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
         sudo apt-get update</code></pre>
     <p>Installieren Sie dann Docker Compose.</p>
     <pre><code>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</code></pre>
 
     <h2>Apache2 & Shibboleth installieren</h2>
     <p>Installieren Sie Apache2 mit den folgenden Befehlen. (Bitte den Befehl Schritt für Schritt ausführen.)</p>
+
     <pre><code>apt update</code></pre>
 
     <pre><code>apt install ca-certificates openssl</code></pre>
@@ -50,7 +49,8 @@
 
     <pre><code>apt install libapache2-mod-shib ntp</code></pre>
 
-    
+    <pre><code>cd /etc</code></pre>
+
     <pre><code>wget --no-check-certificate https://shibboleth.net/downloads/embedded-discovery-service/latest/shibboleth-embedded-ds-1.3.0.tar.gz && \
     tar -xzf shibboleth-embedded-ds-1.3.0.tar.gz && \
     cd shibboleth-embedded-ds-1.3.0 && \
@@ -65,13 +65,6 @@
     <p>Installieren Sie Network File System mit den folgenden Befehlen. (Bitte den Befehl Schritt für Schritt ausführen.)</p>
     <pre><code>sudo apt-get install nfs-kernel-server </code></pre>
     <pre><code>sudo apt-get install nfs-common</code></pre>
- 
-    <pre><code>nano /etc/exports</code></pre>
-    <pre><code>/PFAD/ZUR/FREIGABE2      *(ro,async)</code></pre>
- 
-    <pre><code> sudo exportfs -ra </code></pre>
- 
-    <pre><code>sudo chown -R ubuntu:users /PFAD/ZUR/FREIGABE2/DHBW-Kurs </code></pre>
 
     <h2>Docker Swarm installieren</h2>
     <p>Erstellen Sie einen Docker Swarm Cluster auf dem Manager Node. Verwenden Sie Ihren aktuellen Manager Node, um den Swarm Cluster zu initiieren, indem Sie den folgenden Befehl ausführen. Stellen Sie sicher, dass Sie den Join Token notieren, der in der Ausgabe angezeigt wird, sobald der Befehl abgeschlossen ist.</p>
@@ -85,9 +78,9 @@
     Außerdem braucht Shibboleth SP auch ein Zertifikat, um mit Shibboleth IdP zu kommunizieren.
     Hier verwenden wir certbot und Letsencrypt, um das Zertifikat automatisch zu generieren.</p>
  
-            <pre><code>mkdir /opt/webapp
-cd /opt/webapp
-mkdir /opt/webapp/exchange_data</code></pre>
+            <pre><code>mkdir /opt/WebApp
+cd /opt/WebApp
+mkdir /opt/WebApp/exchange_data</code></pre>
 
             <pre><code>sudo snap install --classic certbot</code></pre>
 

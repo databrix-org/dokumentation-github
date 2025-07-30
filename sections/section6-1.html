@@ -86,7 +86,7 @@
         also add your own attributes with values that can be plugged into the
         templates, e.g., helpLocation below.
         --&gt;
-        &lt;Errors supportContact="yuqiang.gu@dhbw-stutgart.de"
+        &lt;Errors supportContact="your@email.com"
             helpLocation="/about.html"
             styleSheet="/shibboleth-sp/main.css"/&gt;
 
@@ -149,8 +149,8 @@
     <p><strong>idpselect_condig.js</strong> (in Shibboleth-ds Odner) muss auch konfiguriert werden, damit VM von Shibboleth IdP erlaubt ist.</p>
     <p>Öffnen Sie die Datei und folgende Anpassungen vornehmen:</p>
     <pre><code class="language-bash">nano /etc/shibboleth-ds/idpselect_config.js</code></pre>
-    <pre><code class="language-js">this.redirectAllow = [ "^https:\/\/1985609f-7839-4819-8840-2d38548e4ea5.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ,"^https:\/\/example\.com\/Shibboleth\.sso\/Login.*$" ];
-this.returnWhiteList = [ "^https:\/\/example\.ma.bw-cloud-instance\.org\/Shibboleth\.sso\/Login.*$" ];</code></pre>
+    <pre><code class="language-js">this.redirectAllow = [ "^https:\/\/example\.org\/Shibboleth\.sso\/Login.*$" ];
+this.returnWhiteList = [ "^https:\/\/example\.org\/Shibboleth\.sso\/Login.*$" ];</code></pre>
 
 
     <p>Nach der Konfiguration müssen Shibboleth SP und Apache neu gestartet werden:</p>
